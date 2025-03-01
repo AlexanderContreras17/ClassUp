@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using ClassUp.ViewModels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,15 +10,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ClassUp;
+namespace ClassUp.Views;
 
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
+
 public partial class MainWindow : Window
 {
     public MainWindow()
     {
-        InitializeComponent();
+        InitializeComponent(); 
+        DataContext = new QuizViewModel();
     }
 }
