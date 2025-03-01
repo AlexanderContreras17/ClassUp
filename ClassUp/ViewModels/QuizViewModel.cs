@@ -1,10 +1,11 @@
-﻿using ClassUp.Helpers;
-using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.Command;
 using System;
 using System.ComponentModel;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -14,22 +15,41 @@ namespace ClassUp.ViewModels
     {
         private UdpClient _udpClient;
         private DispatcherTimer _timer;
+        private CancellationTokenSource _cts;
         private int _timeLeft;
         private string _selectedOption;
         private string _questionText;
         private bool _isLocked;
-        private const int PORT = 6000;
-        private const string SERVER_IP = "127.0.0.1";
+
+        // Variables privadas para IP y Puerto (corrige el error)
+        private string _serverIP;
+        private int _serverPort;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public QuizViewModel()
         {
-            _udpClient = new UdpClient(PORT); // Escuchar en el puerto 6000
+            _serverIP = "127.0.0.1";  // Valor predeterminado, configurable
+            _serverPort = 6000;       // Valor predeterminado, configurable
+
+            _udpClient = new UdpClient(0); // Puerto dinámico para evitar conflictos
+            _cts = new CancellationTokenSource();
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             _timer.Tick += TimerElapsed;
-            StartTimer();
-            ReceiveQuestionFromServer(); // Iniciar la recepción de preguntas
+
+            StartListening(); // Iniciar recepción en un hilo separado
+        }
+
+        public string ServerIP
+        {
+            get => _serverIP;
+            set { _serverIP = value; OnPropertyChanged(); }
+        }
+
+        public int ServerPort
+        {
+            get => _serverPort;
+            set { _serverPort = value; OnPropertyChanged(); }
         }
 
         public int TimeLeft
@@ -56,8 +76,7 @@ namespace ClassUp.ViewModels
             set { _isLocked = value; OnPropertyChanged(); }
         }
 
-        public ICommand SelectOptionCommand => new GalaSoft.MvvmLight.Command.RelayCommand<string>(SendAnswer);
-
+        public ICommand SelectOptionCommand => new RelayCommand<string>(option => SelectedOption = option);
         public ICommand AcceptCommand => new RelayCommand(Accept);
 
         private void StartTimer()
@@ -71,42 +90,56 @@ namespace ClassUp.ViewModels
             if (TimeLeft > 0)
                 TimeLeft--;
             else
+            {
                 _timer.Stop();
-        }
-
-        private void SendAnswer(string option)
-        {
-            SelectedOption = option;
+                IsLocked = true; // Bloquear la interfaz cuando el tiempo termine
+            }
         }
 
         private void Accept()
         {
-            IsLocked = true; // Bloquear la interfaz
-            _timer.Stop(); // Detener el temporizador
-            // Enviar la respuesta seleccionada al servidor
+            if (string.IsNullOrEmpty(SelectedOption)) return;
+
+            IsLocked = true;
+            _timer.Stop();
+
             string message = $"FinalAnswer:{SelectedOption}";
             byte[] data = Encoding.UTF8.GetBytes(message);
-            _udpClient.Send(data, data.Length, SERVER_IP, PORT);
+            _udpClient.Send(data, data.Length, ServerIP, ServerPort);
         }
 
-        private async void ReceiveQuestionFromServer()
+        private async void StartListening()
         {
             try
             {
-                while (true) // Escuchar continuamente
+                _cts = new CancellationTokenSource();
+                while (!_cts.Token.IsCancellationRequested)
                 {
-                    // Recibir datos del servidor
                     UdpReceiveResult result = await _udpClient.ReceiveAsync();
                     string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
 
-                    // Actualizar la pregunta en la vista
-                    QuestionText = receivedMessage;
+                    if (!string.IsNullOrEmpty(receivedMessage))
+                    {
+                        QuestionText = receivedMessage;
+                        IsLocked = false;
+                        StartTimer(); // Reiniciar temporizador cuando llega una nueva pregunta
+                    }
                 }
+            }
+            catch (ObjectDisposedException)
+            {
+                // Se cerró el cliente, no hacer nada.
             }
             catch (Exception ex)
             {
-                QuestionText = "Error al recibir la pregunta: " + ex.Message;
+                QuestionText = $"Error: {ex.Message}";
             }
+        }
+
+        public void StopListening()
+        {
+            _cts.Cancel();
+            _udpClient?.Close();
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -115,6 +148,7 @@ namespace ClassUp.ViewModels
         }
     }
 }
+
 
 
 
