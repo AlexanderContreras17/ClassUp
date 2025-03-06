@@ -12,4 +12,8 @@
     <PackageReference Include="System.ObjectModel" Version="4.0.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ClassUp\ClassUp.csproj" />
+  </ItemGroup>
+
 </Project>
