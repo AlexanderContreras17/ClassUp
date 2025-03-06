@@ -18,8 +18,7 @@
         <StackPanel Orientation="Vertical" Margin="30,62,70,-22" >
             <Label Content="IP del servidor:"/>
             <TextBox Text="{Binding ServerIP, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
-            <Label Content="Puerto:"/>
-
+            <Label Content="Puerto:" Width="340"/>
             <TextBox Text="{Binding ServerPort, UpdateSourceTrigger=PropertyChanged}" Width="60"/>
 
         </StackPanel>
@@ -36,17 +35,20 @@
              TextWrapping="Wrap" Width="400" TextAlignment="Center"/>
 
         <!-- Reloj de cuenta regresiva -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,20,0">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                    VerticalAlignment="Top" Margin="0,10,20,0">
             <Ellipse Width="35" Height="35" Fill="Transparent" Stroke="#37474F" StrokeThickness="2">
                 <Ellipse.RenderTransform>
                     <RotateTransform x:Name="ClockAnimation" Angle="0" CenterX="17.5" CenterY="17.5"/>
                 </Ellipse.RenderTransform>
             </Ellipse>
-            <TextBlock Text="{Binding TimeLeft}" FontSize="20" FontWeight="Bold" Foreground="#37474F" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <TextBlock Text="{Binding TimeLeft}" FontSize="20" FontWeight="Bold" 
+                       Foreground="#37474F" VerticalAlignment="Center" Margin="10,0,0,0"/>
         </StackPanel>
 
         <!-- Opciones -->
-        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0">
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" Margin="0,20,0,0">
             <Button Content="Verdadero" Width="260" Height="45" Margin="5"
               
               />
