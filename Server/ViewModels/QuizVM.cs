@@ -13,7 +13,7 @@ using System.Windows.Media;
 
 namespace Server.ViewModels
 {
-    public enum Vistas { Ver, Agregar, Quiz }
+    public enum Vistas { Ver, Agregar, Quiz, Resultados }
 
     public class QuizVM:INotifyPropertyChanged
     {
@@ -64,7 +64,7 @@ namespace Server.ViewModels
         {
             Lista = new ObservableCollection<QuizModel>();
             server.RespuestaRecibida+=Server_RespuestaRecibida;
-            VerAgregarCommand = new RelayCommand(VerAgregar);
+            VerAgregarCommand = new RelayCommand(VerAgregar);  
             AgregarCommand = new RelayCommand(Agregar);
             CancelarCommand=new RelayCommand(Cancelar);
 

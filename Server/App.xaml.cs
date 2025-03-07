@@ -14,7 +14,7 @@ namespace Server
         {
             base.OnStartup(e);
 
-            QuizServer server = new();
+          
         }
     }
 

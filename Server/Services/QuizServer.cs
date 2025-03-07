@@ -20,7 +20,7 @@ namespace Server.Services
 
         public QuizServer()
         {
-            server = new(6000);
+            server = new(6001);
             server.EnableBroadcast = true;
             Thread hilo = new(RecibirRespuesta);
             hilo.IsBackground = true;

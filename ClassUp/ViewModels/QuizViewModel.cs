@@ -12,7 +12,7 @@ using System.Windows.Threading;
 
 namespace ClassUp.ViewModels
 {
-    public class QuizViewModel : INotifyPropertyChanged
+    public class QuizViewModel
     {
 
         public QuizClienteModel QuizModel { get; set; }

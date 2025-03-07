@@ -31,3 +31,7 @@ namespace ClassUp.Services
         }
     }
 }
+
+
+//cliente ip nombre de user
+//repsuestacliente

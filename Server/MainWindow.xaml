@@ -3,51 +3,70 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Server" xmlns:viewmodels="clr-namespace:Server.ViewModels"
+        xmlns:local="clr-namespace:Server" xmlns:viewmodels="clr-namespace:Server.ViewModels" xmlns:views="clr-namespace:Server.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.DataContext>
         <viewmodels:QuizVM></viewmodels:QuizVM>
     </Window.DataContext>
 
-    <StackPanel>
-        <WrapPanel>
+    <Grid>
+        <views:ServerView></views:ServerView>
 
-            <Label>IP:</Label>
-            <Label>0.0.0.0</Label>
-        </WrapPanel>
-        <WrapPanel>
-            <Label>Tiempo restante</Label>
-            <Label>0:00</Label>
-        </WrapPanel>
-        <WrapPanel>
-            <Label>Pregunta:</Label>
-            <Label>sabes back?</Label>
-        </WrapPanel>
-        <WrapPanel>
-            <Label>Option 1</Label>
-            <Label>Option 2</Label>
-        </WrapPanel>
-        <Button>Start</Button>
-        <StackPanel>
-            <Label>Person 1</Label>
-            <Label>Person 2</Label>
-            <Label>Person 3</Label>
+        <views:AgregarView>
+            <views:AgregarView.Style>
+                <Style TargetType="UserControl">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Vista}"
+                         Value="{x:Static viewmodels:Vistas.Agregar}">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </views:AgregarView.Style>
+        </views:AgregarView>
 
-        </StackPanel>
+        <views:QuizView>
+            <views:QuizView.Style>
+                <Style TargetType="UserControl">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Vista}"
+     Value="{x:Static viewmodels:Vistas.Quiz}">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </views:QuizView.Style>
+        </views:QuizView>
 
+        <views:ServerView>
+            <views:ServerView.Style>
+                <Style TargetType="UserControl">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Vista}"
+Value="{x:Static viewmodels:Vistas.Ver}">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </views:ServerView.Style>
+        </views:ServerView>
 
-        <TextBlock>Preguntas</TextBlock>
-        <Button Command="{Binding VerAgregarCommand}">Agregar Preguntas</Button>
-
-
-        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Lista}" SelectedItem="{Binding QuizModel}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Pregunta}" Width="0.5*" Header="Pregunta"></DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding Respuesta}" Width="0.2*" Header="Respuesta" ></DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding Tiempo}" Header="Tiempo para responder" Width="0.2*" ></DataGridTextColumn>
-
-            </DataGrid.Columns>
-        </DataGrid>
-    </StackPanel>
+        <views:ResultadosView>
+            <views:ResultadosView.Style>
+                <Style TargetType="UserControl">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Vista}"
+Value="{x:Static viewmodels:Vistas.Resultados}">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </views:ResultadosView.Style>
+        </views:ResultadosView>
+    </Grid>
 </Window>

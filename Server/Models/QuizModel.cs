@@ -12,6 +12,6 @@ namespace Server.Models
         public string? Pregunta { get; set; }
         public byte Tiempo { get; set; }
         public string Respuesta { get; set; }
-        public byte Puntuacion { get; set; }
+        //public byte Puntuacion { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace ClassUp.Model
     public class QuizClienteModel
     {
         public string? Respuesta { get; set; }
+        public string Persona { get; set; }
 
     }
 }
