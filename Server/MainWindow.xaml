@@ -3,51 +3,102 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Server" xmlns:viewmodels="clr-namespace:Server.ViewModels"
+        xmlns:local="clr-namespace:Server"
+        xmlns:viewmodels="clr-namespace:Server.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Quiz Server"
+        Height="600"
+        Width="800"
+        Background="#F8F9FA"
+        WindowStartupLocation="CenterScreen">
+
     <Window.DataContext>
-        <viewmodels:QuizVM></viewmodels:QuizVM>
+        <viewmodels:QuizVM />
     </Window.DataContext>
 
-    <StackPanel>
-        <WrapPanel>
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Info del servidor -->
+            <RowDefinition Height="Auto"/>
+            <!-- Info del quiz -->
+            <RowDefinition Height="Auto"/>
+            <!-- Pregunta actual -->
+            <RowDefinition Height="Auto"/>
+            <!-- Opciones -->
+            <RowDefinition Height="Auto"/>
+            <!-- Participantes -->
+            <RowDefinition Height="Auto"/>
+            <!-- Botón de inicio -->
+            <RowDefinition Height="*"/>
+            <!-- Preguntas (DataGrid ocupará espacio dinámico) -->
+        </Grid.RowDefinitions>
 
-            <Label>IP:</Label>
-            <Label>0.0.0.0</Label>
-        </WrapPanel>
-        <WrapPanel>
-            <Label>Tiempo restante</Label>
-            <Label>0:00</Label>
-        </WrapPanel>
-        <WrapPanel>
-            <Label>Pregunta:</Label>
-            <Label>sabes back?</Label>
-        </WrapPanel>
-        <WrapPanel>
-            <Label>Option 1</Label>
-            <Label>Option 2</Label>
-        </WrapPanel>
-        <Button>Start</Button>
-        <StackPanel>
-            <Label>Person 1</Label>
-            <Label>Person 2</Label>
-            <Label>Person 3</Label>
-
+        <!-- Información del servidor -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10 0 10">
+            <TextBlock Text="IP:" FontSize="16" FontWeight="Bold" />
+            <TextBlock Text=" 0.0.0.0" FontSize="16" Foreground="#007AFF" />
         </StackPanel>
 
+        <!-- Información del Quiz -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10 0 10">
+            <TextBlock Text="Tiempo restante: " FontSize="16" FontWeight="Bold" />
+            <TextBlock Text="0:00" FontSize="16" Foreground="#FF3B30" />
+        </StackPanel>
 
-        <TextBlock>Preguntas</TextBlock>
-        <Button Command="{Binding VerAgregarCommand}">Agregar Preguntas</Button>
+        <!-- Pregunta actual -->
+        <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0 10 0 10">
+            <TextBlock Text="Pregunta actual:" FontSize="16" FontWeight="Bold" Margin="0 0 5 5" />
+            <Border Background="White" Padding="10" CornerRadius="5" BorderBrush="#DDDDDD" BorderThickness="1">
+                <TextBlock Text="¿Sabes back?" FontSize="16" Foreground="#333333" TextWrapping="Wrap"/>
+            </Border>
+        </StackPanel>
 
+        <!-- Opciones -->
+        <WrapPanel Grid.Row="3" HorizontalAlignment="Center" Margin="0 10 0 10">
+            <Border Background="#007AFF" Padding="8" CornerRadius="5" Margin="5" MinWidth="100">
+                <TextBlock Text="Opción 1" Foreground="White" FontSize="14" TextAlignment="Center"/>
+            </Border>
+            <Border Background="#34C759" Padding="8" CornerRadius="5" Margin="5" MinWidth="100">
+                <TextBlock Text="Opción 2" Foreground="White" FontSize="14" TextAlignment="Center"/>
+            </Border>
+        </WrapPanel>
 
-        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Lista}" SelectedItem="{Binding QuizModel}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Pregunta}" Width="0.5*" Header="Pregunta"></DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding Respuesta}" Width="0.2*" Header="Respuesta" ></DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding Tiempo}" Header="Tiempo para responder" Width="0.2*" ></DataGridTextColumn>
+        <!-- Lista de jugadores -->
+        <StackPanel Grid.Row="4" Margin="0 10 0 10">
+            <TextBlock Text="Participantes" FontSize="16" FontWeight="Bold" Margin="0 0 0 5"/>
+            <ListBox Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="10" MinHeight="80">
+                <ListBoxItem Content="Person 1" />
+                <ListBoxItem Content="Person 2" />
+                <ListBoxItem Content="Person 3" />
+            </ListBox>
+        </StackPanel>
 
-            </DataGrid.Columns>
-        </DataGrid>
-    </StackPanel>
+        <!-- Botón de inicio -->
+        <Button Grid.Row="5" Content="Iniciar Quiz" Width="200" Height="40" Background="#007AFF"
+                Foreground="White" FontSize="16" FontWeight="Bold" BorderThickness="0"
+                HorizontalAlignment="Center" Cursor="Hand" Margin="0 10 0 10" />
+
+        <!-- Preguntas y DataGrid -->
+        <StackPanel Grid.Row="6" Margin="0 10 0 10">
+            <TextBlock Text="Lista de Preguntas" FontSize="16" FontWeight="Bold" Margin="0 0 5 5" />
+            <Button Content="Agregar Pregunta" Command="{Binding VerAgregarCommand}" Width="150" Height="35"
+                    Background="#34C759" Foreground="White" FontSize="14" BorderThickness="0"
+                    HorizontalAlignment="Left" Cursor="Hand" Margin="0 0 0 10" />
+
+            <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Lista}"
+                      SelectedItem="{Binding QuizModel}" Background="White" BorderBrush="#DDDDDD"
+                      BorderThickness="1" GridLinesVisibility="None"
+                      MinHeight="150">
+                <!-- Para evitar que colapse demasiado -->
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Pregunta}" Header="Pregunta" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Respuesta}" Header="Respuesta" Width="0.3*" />
+                    <DataGridTextColumn Binding="{Binding Tiempo}" Header="Tiempo (s)" Width="0.3*" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </Grid>
 </Window>
+
+
